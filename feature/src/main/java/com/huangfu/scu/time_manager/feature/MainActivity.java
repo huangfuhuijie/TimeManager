@@ -26,6 +26,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private Switch view_onAlarm;
+
     private Switch view_onSleepAlarm;
     private ListView view_program;
 
@@ -70,65 +71,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        /*
-        接下来的几行是睡觉检测的初始化和listener
-        * */
-        view_onSleepAlarm = findViewById(R.id.widget_onSleepAlarm);
-        Boolean isOnSleepAlarm  = data.getBoolean("isOnSleepAlarm",false);
-        view_onSleepAlarm.setChecked(isOnSleepAlarm);
-        if(isOnSleepAlarm)
-        {
-            startService(sleepMonitorService);
-        }
-        view_onSleepAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
-                    String sleepTime = data.getString("sleepTime",null);
-                    if(sleepTime==null) {
-                        Toast.makeText(MainActivity.this, "还没有设置过睡觉时间，默认为23:00", Toast.LENGTH_SHORT).show();
-                    }
-                    editor.putBoolean("isOnSleepAlarm",true);
-                    startService(sleepMonitorService);
-//                    Log.i("start","开启睡觉提醒");
-                } else {
-                    editor.putBoolean("isOnSleepAlarm",false);
-                    stopService(sleepMonitorService);
-//                    Log.i("stop","关闭睡觉提醒");
-                }
-                editor.apply();
-            }
-        });
-
-        view_program.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String, Object> tempMap = (Map<String, Object>)adapterView.getAdapter().getItem(i);
-                if (data.getBoolean("isOnAlarm", false)) {
-                    Toast.makeText(MainActivity.this, "请先关闭提醒", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                String packageName = (String)tempMap.get("id");
-                for(int j = 0; j < onListAppInfo.size(); j++) {
-                    if (onListAppInfo.get(j).get("id").equals(packageName)) {
-                        onListAppInfo.remove(j);
-                    }
-                }
-                putItems();
-                adapter = new ProgramListAdapter(MainActivity.this, onListAppInfo);
-                view_program.setAdapter(adapter);
-                return true;
-            }
-        });
-        if(data.getBoolean("first_open",true)){
-            Log.i("showHowToUse","进入说明页面");
-            editor.putBoolean("first_open",false);
-            editor.apply();
-            Intent intent = new Intent(MainActivity.this,HowToUse.class);
-            startActivity(intent);
-        }
-
-    }
 
     protected void onResume() {
         super.onResume();

@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 
 public class AlarmActivity extends AppCompatActivity{
 
-    @Override
+    @Override 
+    private List<String> packageNames;
+    private SharedPreferences data;
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
@@ -21,7 +23,6 @@ public class AlarmActivity extends AppCompatActivity{
         String content = (String) getIntent().getExtras().get("content");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.app_name)).setIcon(R.drawable.new_clock);
-        builder.setMessage(content);
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
